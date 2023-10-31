@@ -25,8 +25,8 @@ ds=Font(family="Gill Sans MT",size=50)
 im=PhotoImage(file="timericon.png")
 im2=PhotoImage(file="timeicon.png")
 
-l=Label(enter,font=ds,background="#616161",foreground="#ff7f27")
-l.pack()
+# l=Label(enter,font=ds,background="#616161",foreground="#ff7f27")
+# l.pack()
 
 def time1(e):
         global hr
@@ -36,8 +36,8 @@ def time1(e):
         #      hr.destroy()
         # except:
         #        pass
-        # l=Label(enter,font=ds,background="#616161",foreground="#ff7f27")
-        # l.pack()
+        l=Label(enter,font=ds,background="#616161",foreground="#ff7f27")
+        l.pack()
     
         def time():
                 String = strftime('%I:%M:%S %p')
@@ -50,30 +50,46 @@ def time1(e):
 def timer2(e):
     global hr
     global l
-    l.config(text="")
-    l.update()
+    # l.config(text="")
+    # l.update()
 
-    enter.update()
+    # enter.update()
 
-    
 
     def only_numbers(char):
         if char.isdigit() or char==" ":
             return True
         else:
             return False
+    global count
+    count=0
+    def t(e):
+        global count
+        temp=list(hr.get())
+        if count==1:
+            temp.remove(":")
+            count=0
+        for i in range(len(temp)):
+            if temp[i]==":":
+                hr.icursor(i+2)
+                count+=1
+                break
 
+
+       
+        
     validation = root.register(only_numbers)
     hr=tk.Entry(enter) 
-    hr.insert(10,"      ")
+    hr.insert(10,"    ")
     hr.insert(20,":")
-    hr.insert(10,"      ")
+    hr.insert(10,"    ")
     hr.insert(50,":")
-    hr.config(font=ds,width=13,background="#616161",border=1,foreground="#ff7f27",validate="key", validatecommand=(validation,"%S"))
+    hr.icursor(8)
+    hr.config(font=ds,width=13,border=0,background="#616161",foreground="#ff7f27",validate="key", validatecommand=(validation,"%S"))
     hr.pack(side=LEFT,pady=22)
+    root.bind("<Return>",t)
 
-
-
+ 
 clock=Button(option,image=im2,width=56,height=56,border=0,bg="black",activebackground="#616161")
 clock.bind("<Button-1>",time1)
 clock.pack(side=TOP,)
