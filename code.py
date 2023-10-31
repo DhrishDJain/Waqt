@@ -29,16 +29,15 @@ im2=PhotoImage(file="timeicon.png")
 # l.pack()
 global l
 def time1(e):
-        global hr
+        global ino
         global enter
         global l
         try:
-            hr.destroy()
+            ino.destroy()
         except:
                pass
         l=Label(enter,font=ds,background="#616161",foreground="#ff7f27")
-        l.pack()
-    
+        l.pack()    
         def time():
                 String = strftime('%I:%M:%S %p')
                 l.config(text = String)
@@ -48,24 +47,54 @@ def time1(e):
 
 
 def timer2(e):
-    global hr
+    global ino
     global l
     global count
     try:
         l.destroy()
     except:
         pass
-    hr=tk.Entry(enter) 
+    inp=tk.Entry(enter) 
     count=0
+
+    def magic(numList):
+        s = ''.join(map(str, numList))
+        return int(s)
+
+    def counter(e):
+        time=list(inp.get())
+        hr=[]
+        mi=[]
+        sec=[]
+
+        for i in range(len(time)):
+            try:
+                if time[0]!=" " :
+                    if time[0]==":":
+                        time.pop(0)
+                        break
+                    hr.append(time[0]) 
+            except:
+                pass
+            time.pop(0)
+
+        hour=magic(hr)
+        print(hour,time)
+
+
+    start=Button(enter,text="START",width=6,height=1,border=0,bg="#ff7f27",activebackground="#616161")
+    start.bind("<Button-1>",counter)
+    start.pack(anchor=NE,padx=40)
+
     def cursor(e):
         global count
-        temp=list(hr.get())
+        temp=list(inp.get())
         if count==1:
             temp.remove(":")
             count=0
         for i in range(len(temp)):
             if temp[i]==":":
-                hr.icursor(i+2)
+                inp.icursor(i+2)
                 count+=1
                 break
        
@@ -75,13 +104,13 @@ def timer2(e):
         else:
             return False
     validation = root.register(only_numbers)
-    hr.insert(10,"     ")
-    hr.insert(20,":")
-    hr.insert(10,"    ") 
-    hr.insert(50,":")
+    inp.insert(10,"      ")
+    inp.insert(20,":")
+    inp.insert(10,"     ") 
+    inp.insert(50,":")
     
-    hr.config(font=ds,width=13,border=0,background="#616161",foreground="#ff7f27",validate="key", validatecommand=(validation,"%S"))
-    hr.pack(side=LEFT,pady=22)
+    inp.config(font=ds,width=13,border=1,background="#616161",foreground="#ff7f27",validate="key", validatecommand=(validation,"%S"))
+    inp.pack(side=LEFT,pady=11)
     root.bind("<Return>",cursor)
 
  
@@ -126,7 +155,7 @@ root.mainloop()
 #     while True:
 #         print(f" COUNTDOWN {h}:{m}:{s} ",end="\r")
 #         time.sleep(1)
-#         #various cases to handle hr min and second
+#         #various cases to handle ino min and second
 #         if (s==0 and m!=0):
 #             m-=1
 #             s=60
