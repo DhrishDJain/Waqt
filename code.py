@@ -45,9 +45,44 @@ def time1(e):
                 l.after(1000,time)
         time()
 
+def magic(numList):
+        s = ''.join(map(str, numList))
+        return int(s)
+
+def valueevalv(enteredtime):
+    var=[]
+
+    for i in range(len(enteredtime)):
+            try:
+                if enteredtime[0]!=" " :
+                    if enteredtime[0]==":":
+                        enteredtime.pop(0)
+                        break
+                    var.append(enteredtime[0]) 
+            except:
+                pass
+            enteredtime.pop(0)
+
+    intvar=magic(var)
+    return intvar
+
+def counter(e):
+    time=list(inp.get())
+    hr=valueevalv(time)
+    mi=valueevalv(time)
+    sec=valueevalv(time)
+    if sec>=60:
+        mi=mi+int(sec/60)
+        sec=sec%60
+        print(sec)
+    if mi>=60:
+        hr=hr+int(mi/60)
+        mi=mi%60
+    print(hr,mi,sec)
+      
 
 def timer2(e):
-    global ino
+    global inp
     global l
     global count
     try:
@@ -56,31 +91,6 @@ def timer2(e):
         pass
     inp=tk.Entry(enter) 
     count=0
-
-    def magic(numList):
-        s = ''.join(map(str, numList))
-        return int(s)
-
-    def counter(e):
-        time=list(inp.get())
-        hr=[]
-        mi=[]
-        sec=[]
-
-        for i in range(len(time)):
-            try:
-                if time[0]!=" " :
-                    if time[0]==":":
-                        time.pop(0)
-                        break
-                    hr.append(time[0]) 
-            except:
-                pass
-            time.pop(0)
-
-        hour=magic(hr)
-        print(hour,time)
-
 
     start=Button(enter,text="START",width=6,height=1,border=0,bg="#ff7f27",activebackground="#616161")
     start.bind("<Button-1>",counter)
@@ -142,11 +152,7 @@ root.mainloop()
 # h=int(value[0])
 # m=int(value[1])
 # s=int(value[2])
-# if m>60:
-#     m=int(input("Plz enter min value in the range of 0 to 60 :"))
-# if s>60:
-#     s=int(input("Plz enter second value in the range of 0 to 60 :"))
-
+#
 # #main function
 # def counter(h,m,s):
 #     hs=h*3600
