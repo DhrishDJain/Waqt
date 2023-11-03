@@ -1,8 +1,9 @@
 from tkinter import * 
 from tkinter.font import Font
 import tkinter as tk
-
 from time import strftime
+from datetime import date
+from time import sleep 
 
 class ui(tk.Tk):
     def __init__(self):
@@ -22,32 +23,47 @@ option.pack(side=LEFT,fill=Y)
 enter=Frame(root,background="#616161",border=6)
 enter.pack(anchor=CENTER,fill=X)
 ds=Font(family="Gill Sans MT",size=50)
+datefont=Font(family="Gill Sans MT",size=25)
 im=PhotoImage(file="timericon.png")
 im2=PhotoImage(file="timeicon.png")
 
-# l=Label(enter,font=ds,background="#616161",foreground="#ff7f27")
-# l.pack()
 global l
-def time1(e):
-        global ino
+def clear_frame(event=None):
+   for widgets in enter.winfo_children():
+      widgets.destroy()
+   if event!=None :
+        timer2(None)
+
+def time1(e=None):
+        global inp
         global enter
         global l
-        try:
-            ino.destroy()
-        except:
-               pass
+        global ld
+        global start
+        global disp
+        clear_frame()
+        datee=date.today()
         l=Label(enter,font=ds,background="#616161",foreground="#ff7f27")
-        l.pack()    
+        l.pack()  
+        ld=Label(enter,font=datefont,background="#616161",foreground="#ff7f27",text=f'{datee.strftime("%B %d, %Y %A")}')
+        ld.pack(anchor=CENTER)
         def time():
+                
                 String = strftime('%I:%M:%S %p')
                 l.config(text = String)
-                print("x")
                 l.after(1000,time)
+                
         time()
+time1()
+
 
 def magic(numList):
         s = ''.join(map(str, numList))
-        return int(s)
+        try:
+            return int(s)
+        except:
+            return 0
+
 
 def valueevalv(enteredtime):
     var=[]
@@ -66,32 +82,73 @@ def valueevalv(enteredtime):
     intvar=magic(var)
     return intvar
 
+
+
 def counter(e):
-    time=list(inp.get())
-    hr=valueevalv(time)
-    mi=valueevalv(time)
-    sec=valueevalv(time)
+    global inp
+    global start
+    global disp
+    
+    timein=list(inp.get())
+    clear_frame()
+    disp=Label(enter,font=ds,background="#616161",foreground="#ff7f27",height=4)
+    disp.pack(side=LEFT,padx=50,pady=0)
+    
+    stop=Button(enter,text="STOP",width=7,height=1,border=0,bg="#ff7f27",activebackground="#616161")
+    stop.bind("<Button-1>",clear_frame)
+    stop.pack(anchor=NW,padx=4)
+    # stop=Button(enter,text="STOP",background="#ff7f27")
+    # stop.bind("<Button-1>",clear_frame)
+    # stop.pack(anchor=W)
+    
+    
+    hr=valueevalv(timein)
+    mi=valueevalv(timein)
+    sec=valueevalv(timein)
+    if hr==0 and mi==0 and sec==0:
+        timer2(None)
     if sec>=60:
         mi=mi+int(sec/60)
         sec=sec%60
-        print(sec)
     if mi>=60:
         hr=hr+int(mi/60)
         mi=mi%60
-    print(hr,mi,sec)
+    
+    ts=hr*3600+mi*60+sec
+
+    for i in range(ts):
+        try:
+           disp.config(text=f"{str(hr).zfill(2)}:{str(mi).zfill(2)}:{str(sec).zfill(2)}")
+           disp.update()
+        except:
+            print("terminated")
+            break
+        sleep(1)
+        #various cases to handle ino min and second
+        if (sec==0 and mi!=0):
+            mi-=1
+            sec=60
+        elif(hr!=0 and (mi==0 or sec==0)):
+            hr-=1
+            mi=59
+            sec=60
+        elif mi==0 and hr!=0:
+            hr-=1
+            mi=59
+        elif ts==0 or (hr==0 and mi==0 and sec==0):
+            break
+        sec-=1
+        ts-=1
       
 
 def timer2(e):
     global inp
     global l
     global count
-    try:
-        l.destroy()
-    except:
-        pass
+    global start
+    clear_frame()
     inp=tk.Entry(enter) 
     count=0
-
     start=Button(enter,text="START",width=6,height=1,border=0,bg="#ff7f27",activebackground="#616161")
     start.bind("<Button-1>",counter)
     start.pack(anchor=NE,padx=40)
@@ -101,13 +158,15 @@ def timer2(e):
         temp=list(inp.get())
         if count==1:
             temp.remove(":")
-            count=0
+        elif count>1:
+            return
         for i in range(len(temp)):
             if temp[i]==":":
-                inp.icursor(i+2)
+                inp.icursor(i+3)
                 count+=1
                 break
-       
+            
+        
     def only_numbers(char):
         if char.isdigit() or char==" ":
             return True
@@ -135,50 +194,3 @@ timer.pack(side=TOP,pady=7)
         
 root.mainloop()
 
-
-
-
-
-
-
-
-
-
-
-
-# user=input("Enter the duration of timer (hh:mm:ss):")
-
-# value=user.split(":")
-# h=int(value[0])
-# m=int(value[1])
-# s=int(value[2])
-#
-# #main function
-# def counter(h,m,s):
-#     hs=h*3600
-#     ms=m*60
-#     ts=hs+ms+s#total no. of seconds
-#     while True:
-#         print(f" COUNTDOWN {h}:{m}:{s} ",end="\r")
-#         time.sleep(1)
-#         #various cases to handle ino min and second
-#         if (s==0 and m!=0):
-#             m-=1
-#             s=60
-#         elif(h!=0 and (m==0 or s==0)):
-#             h-=1
-#             m=59
-#             s=60
-#         elif m==0 and h!=0:
-#             h-=1
-#             m=59
-#         elif ts==0 or (h==0 and m==0 and s==0):
-#             break
-#         s-=1
-#         ts-=1
-
-# y=counter(h,m,s)
-# print('\nTIMESUP!!!')
-
-
-# # print(y)
