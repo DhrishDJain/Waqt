@@ -4,6 +4,9 @@ import tkinter as tk
 from time import strftime
 from datetime import date
 from time import sleep 
+import multiprocessing
+from playsound import playsound
+
 
 class ui(tk.Tk):
     def __init__(self):
@@ -83,7 +86,6 @@ def valueevalv(enteredtime):
     return intvar
 
 
-
 def counter(e):
     global inp
     global start
@@ -92,14 +94,11 @@ def counter(e):
     timein=list(inp.get())
     clear_frame()
     disp=Label(enter,font=ds,background="#616161",foreground="#ff7f27",height=4)
-    disp.pack(side=LEFT,padx=50,pady=0)
+    disp.pack(side=LEFT,padx=45,pady=0)
     
     stop=Button(enter,text="STOP",width=7,height=1,border=0,bg="#ff7f27",activebackground="#616161")
     stop.bind("<Button-1>",clear_frame)
     stop.pack(anchor=NW,padx=4)
-    # stop=Button(enter,text="STOP",background="#ff7f27")
-    # stop.bind("<Button-1>",clear_frame)
-    # stop.pack(anchor=W)
     
     
     hr=valueevalv(timein)
@@ -115,8 +114,12 @@ def counter(e):
         mi=mi%60
     
     ts=hr*3600+mi*60+sec
+    
+    p = multiprocessing.Process(target=playsound, args=("sound.mp3",))
 
-    for i in range(ts):
+    def termi(e):
+        p.terminate()
+    for i in range(ts+1):
         try:
            disp.config(text=f"{str(hr).zfill(2)}:{str(mi).zfill(2)}:{str(sec).zfill(2)}")
            disp.update()
@@ -136,9 +139,17 @@ def counter(e):
             hr-=1
             mi=59
         elif ts==0 or (hr==0 and mi==0 and sec==0):
+            stop.destroy()
+            disp.config(text=f"TIMES UP!!")
+            disp.update()
+            playsound("sound.mp3")
+            
+            timer2(None)
             break
+
         sec-=1
         ts-=1
+        print(i)
       
 
 def timer2(e):
