@@ -90,17 +90,13 @@ def counter(e):
     global inp
     global start
     global disp
-    
     timein=list(inp.get())
     clear_frame()
     disp=Label(enter,font=ds,background="#616161",foreground="#ff7f27",height=4)
     disp.pack(side=LEFT,padx=45,pady=0)
-    
     stop=Button(enter,text="STOP",width=7,height=1,border=0,bg="#ff7f27",activebackground="#616161")
     stop.bind("<Button-1>",clear_frame)
     stop.pack(anchor=NW,padx=4)
-    
-    
     hr=valueevalv(timein)
     mi=valueevalv(timein)
     sec=valueevalv(timein)
@@ -111,14 +107,8 @@ def counter(e):
         sec=sec%60
     if mi>=60:
         hr=hr+int(mi/60)
-        mi=mi%60
-    
+        mi=mi%60   
     ts=hr*3600+mi*60+sec
-    
-    p = multiprocessing.Process(target=playsound, args=("sound.mp3",))
-
-    def termi(e):
-        p.terminate()
     for i in range(ts+1):
         try:
            disp.config(text=f"{str(hr).zfill(2)}:{str(mi).zfill(2)}:{str(sec).zfill(2)}")
@@ -142,16 +132,25 @@ def counter(e):
             stop.destroy()
             disp.config(text=f"TIMES UP!!")
             disp.update()
-            playsound("sound.mp3")
-            
+            playsound("sound.mp3")         
             timer2(None)
             break
-
         sec-=1
         ts-=1
-        print(i)
       
 
+def cursor(e):
+    global count
+    temp=list(inp.get())
+    if count==1:
+        temp.remove(":")
+    elif count>1:
+        return
+    for i in range(len(temp)):
+        if temp[i]==":":
+            inp.icursor(i+3)
+            count+=1
+            break        
 def timer2(e):
     global inp
     global l
@@ -164,20 +163,6 @@ def timer2(e):
     start.bind("<Button-1>",counter)
     start.pack(anchor=NE,padx=40)
 
-    def cursor(e):
-        global count
-        temp=list(inp.get())
-        if count==1:
-            temp.remove(":")
-        elif count>1:
-            return
-        for i in range(len(temp)):
-            if temp[i]==":":
-                inp.icursor(i+3)
-                count+=1
-                break
-            
-        
     def only_numbers(char):
         if char.isdigit() or char==" ":
             return True
@@ -187,9 +172,8 @@ def timer2(e):
     inp.insert(10,"      ")
     inp.insert(20,":")
     inp.insert(10,"     ") 
-    inp.insert(50,":")
-    
-    inp.config(font=ds,width=13,border=1,background="#616161",foreground="#ff7f27",validate="key", validatecommand=(validation,"%S"))
+    inp.insert(50,":")   
+    inp.config(font=ds,width=13,border=0,background="#616161",foreground="#ff7f27",validate="key", validatecommand=(validation,"%S"))
     inp.pack(side=LEFT,pady=11)
     root.bind("<Return>",cursor)
 
